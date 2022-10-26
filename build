@@ -1,0 +1,12 @@
+#!/bin/bash
+
+VERSION=$( git describe )
+export KALEIDOSCOPE_DIR=~/src/Kaleidoscope
+
+if ! git diff-index --quiet HEAD --; then
+    VERSION="${VERSION}*"
+fi
+
+# compile
+# flash
+make "$@" LOCAL_CFLAGS='-DBUILD_INFORMATION="'$VERSION'"'
