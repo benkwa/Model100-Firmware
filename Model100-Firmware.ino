@@ -466,7 +466,7 @@ KALEIDOSCOPE_INIT_PLUGINS(
   // SpaceCadet can turn your shifts into parens on tap, while keeping them as
   // Shifts when held. SpaceCadetConfig lets Chrysalis configure some aspects of
   // the plugin.
-  SpaceCadet,
+  // SpaceCadet,
   // SpaceCadetConfig,
 
   // Focus allows bi-directional communication with the host, and is the
@@ -670,7 +670,7 @@ void setup() {
 
   LEDOff.activate();
 
-  Qukeys.setOverlapThreshold(50);
+  //  Qukeys.setOverlapThreshold(50);
 }
 
 /** loop is the second of the standard Arduino sketch functions.
