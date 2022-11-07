@@ -286,6 +286,7 @@ KEYMAPS(
 #ifndef BUILD_INFORMATION
 #define BUILD_INFORMATION "locally built on " __DATE__ " at " __TIME__
 #endif
+#define XSTR(s) STR(s)
 #define STR(s) #s
 
 /** versionInfoMacro handles the 'firmware version info' macro
@@ -296,7 +297,7 @@ KEYMAPS(
 static void versionInfoMacro(uint8_t key_state) {
   if (keyToggledOn(key_state)) {
     Macros.type(PSTR("Keyboardio Model 100 - Firmware version "));
-    Macros.type(PSTR(STR(BUILD_INFORMATION)));
+    Macros.type(PSTR(XSTR(BUILD_INFORMATION)));
   }
 }
 

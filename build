@@ -1,12 +1,22 @@
 #!/bin/bash
 
-VERSION=$( git describe )
-export KALEIDOSCOPE_DIR=~/src/Kaleidoscope
+function version() {
+    cd $1
+    version=$( git describe )
+    if ! git diff-index --quiet HEAD --
+    then
+        version="${version}*"
+    fi
+    echo $version
+}
 
-if ! git diff-index --quiet HEAD --; then
-    VERSION="${VERSION}*"
-fi
+export KALEIDOSCOPE_DIR=~/src/Kaleidoscope
+kaleidoscope_version=$( version $KALEIDOSCOPE_DIR )
+
+keymap_version=$( version . )
+
+version="${kaleidoscope_version}::${keymap_version}"
 
 # compile
 # flash
-make "$@" LOCAL_CFLAGS='-DBUILD_INFORMATION="'$VERSION'"'
+make "$@" LOCAL_CFLAGS="-DBUILD_INFORMATION=\"$version\""
