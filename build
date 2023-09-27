@@ -17,6 +17,8 @@ keymap_version=$( version . )
 
 version="${kaleidoscope_version}::${keymap_version}"
 
+echo "Building $version"
+
 # compile
 # flash
 make "$@" LOCAL_CFLAGS="-DBUILD_INFORMATION=\"$version\""

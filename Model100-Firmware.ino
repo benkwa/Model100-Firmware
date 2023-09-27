@@ -10,16 +10,6 @@
 // The Kaleidoscope core
 #include "Kaleidoscope.h"
 
-// Support for storing the keymap in EEPROM
-#include "Kaleidoscope-EEPROM-Settings.h"
-#include "Kaleidoscope-EEPROM-Keymap.h"
-
-// Support for communicating with the host via a simple Serial protocol
-#include "Kaleidoscope-FocusSerial.h"
-
-// Support for querying the firmware version via Focus
-#include "Kaleidoscope-FirmwareVersion.h"
-
 // Support for keys that move the mouse
 #include "Kaleidoscope-MouseKeys.h"
 
@@ -42,17 +32,8 @@
 // Support for an LED mode that makes all the LEDs 'breathe'
 #include "Kaleidoscope-LEDEffect-Breathe.h"
 
-// Support for an LED mode that makes a red pixel chase a blue pixel across the keyboard
-#include "Kaleidoscope-LEDEffect-Chase.h"
-
 // Support for LED modes that pulse the keyboard's LED in a rainbow pattern
 #include "Kaleidoscope-LEDEffect-Rainbow.h"
-
-// Support for an LED mode that lights up the keys as you press them
-#include "Kaleidoscope-LED-Stalker.h"
-
-// Support for an LED mode that prints the keys you press in letters 4px high
-#include "Kaleidoscope-LED-AlphaSquare.h"
 
 // Support for shared palettes for other plugins, like Colormap below
 #include "Kaleidoscope-LED-Palette-Theme.h"
@@ -83,22 +64,6 @@
 
 // Support for secondary actions on keys
 #include "Kaleidoscope-Qukeys.h"
-
-// Support for one-shot modifiers and layer keys
-#include "Kaleidoscope-OneShot.h"
-#include "Kaleidoscope-Escape-OneShot.h"
-
-// Support for dynamic, Chrysalis-editable macros
-#include "Kaleidoscope-DynamicMacros.h"
-
-// Support for SpaceCadet keys
-#include "Kaleidoscope-SpaceCadet.h"
-
-// Support for editable layer names
-#include "Kaleidoscope-LayerNames.h"
-
-// Support for the GeminiPR Stenography protocol
-#include "Kaleidoscope-Steno.h"
 
 /** This 'enum' is a list of all the macros used by the Model 100's firmware
   * The names aren't particularly important. What is important is that each
@@ -194,10 +159,6 @@ enum {
   */
 
 #define PRIMARY_KEYMAP_QWERTY
-// #define PRIMARY_KEYMAP_DVORAK
-// #define PRIMARY_KEYMAP_COLEMAK
-// #define PRIMARY_KEYMAP_CUSTOM
-
 
 /* This comment temporarily turns off astyle's indent enforcement
  *   so we can make the keymaps actually resemble the physical key layout better
@@ -308,21 +269,26 @@ static void arrowOperatorMacro(uint8_t keyState) {
 }
 
 static void mouseScreenLeft(uint8_t keyState) {
-    // if (keyToggledOn(keyState)) {
-    //     Kaleidoscope.hid().absoluteMouse().moveTo(0, MAX_WARP_HEIGHT/2, 0);
-    //     Kaleidoscope.hid().mouse().move(-10, 0, 0, 0);
-    //     Kaleidoscope.hid().absoluteMouse().moveTo(MAX_WARP_WIDTH/2, MAX_WARP_HEIGHT/2, 0);
-    //     kaleidoscope::plugin::MouseWrapper_::end_warping();
-    // }
+    if (keyToggledOn(keyState)) {
+        Kaleidoscope.hid().mouse().move(-4000, 0, 0, 0);
+        //        Kaleidoscope.hid().absoluteMouse().moveTo(16385,16385, 0);
+
+        // Kaleidoscope.hid().absoluteMouse().moveTo(0, MAX_WARP_HEIGHT/2, 0);
+        // Kaleidoscope.hid().mouse().move(-10, 0, 0, 0);
+        // Kaleidoscope.hid().absoluteMouse().moveTo(MAX_WARP_WIDTH/2, MAX_WARP_HEIGHT/2, 0);
+        // kaleidoscope::plugin::mousekeys::end_warping();
+    }
 }
 
 static void mouseScreenRight(uint8_t keyState) {
-    // if (keyToggledOn(keyState)) {
-    //     Kaleidoscope.hid().absoluteMouse().moveTo(MAX_WARP_WIDTH, MAX_WARP_HEIGHT/2, 0);
-    //     Kaleidoscope.hid().mouse().move(10, 0, 0, 0);
-    //     Kaleidoscope.hid().absoluteMouse().moveTo(MAX_WARP_WIDTH/2, MAX_WARP_HEIGHT/2, 0);
-    //     kaleidoscope::plugin::MouseWrapper_::end_warping();
-    // }
+    if (keyToggledOn(keyState)) {
+        Kaleidoscope.hid().mouse().move(3000, 0, 0, 0);
+        //        Kaleidoscope.hid().absoluteMouse().moveTo(16385,16385, 0);
+        // Kaleidoscope.hid().absoluteMouse().moveTo(MAX_WARP_WIDTH, MAX_WARP_HEIGHT/2, 0);
+        // Kaleidoscope.hid().mouse().move(10, 0, 0, 0);
+        // Kaleidoscope.hid().absoluteMouse().moveTo(MAX_WARP_WIDTH/2, MAX_WARP_HEIGHT/2, 0);
+        // kaleidoscope::plugin::mousekeys::end_warping();
+    }
 }
 
 /** macroAction dispatches keymap events that are tied to a macro
@@ -423,17 +389,6 @@ static void toggleKeyboardProtocol(uint8_t combo_index) {
 }
 
 /**
- * Toggles between using the built-in keymap, and the EEPROM-stored one.
- */
-static void toggleKeymapSource(uint8_t combo_index) {
-  if (Layer.getKey == Layer.getKeyFromPROGMEM) {
-    Layer.getKey = EEPROMKeymap.getKey;
-  } else {
-    Layer.getKey = Layer.getKeyFromPROGMEM;
-  }
-}
-
-/**
  *  This enters the hardware test mode
  */
 static void enterHardwareTestMode(uint8_t combo_index) {
@@ -449,38 +404,12 @@ USE_MAGIC_COMBOS({.action = toggleKeyboardProtocol,
                   .keys = {R3C6, R2C6, R3C7}},
                  {.action = enterHardwareTestMode,
                   // Left Fn + Prog + LED
-                  .keys = {R3C6, R0C0, R0C6}},
-                 {.action = toggleKeymapSource,
-                  // Left Fn + Prog + Shift
-                  .keys = {R3C6, R0C0, R3C7}});
+                  .keys = {R3C6, R0C0, R0C6}});
 
 // First, tell Kaleidoscope which plugins you want to use.
 // The order can be important. For example, LED effects are
 // added in the order they're listed here.
 KALEIDOSCOPE_INIT_PLUGINS(
-  // The EEPROMSettings & EEPROMKeymap plugins make it possible to have an
-  // editable keymap in EEPROM.
-  EEPROMSettings,
-  EEPROMKeymap,
-
-  // SpaceCadet can turn your shifts into parens on tap, while keeping them as
-  // Shifts when held. SpaceCadetConfig lets Chrysalis configure some aspects of
-  // the plugin.
-  // SpaceCadet,
-  // SpaceCadetConfig,
-
-  // Focus allows bi-directional communication with the host, and is the
-  // interface through which the keymap in EEPROM can be edited.
-  Focus,
-
-  // FocusSettingsCommand adds a few Focus commands, intended to aid in
-  // changing some settings of the keyboard, such as the default layer (via the
-  // `settings.defaultLayer` command)
-  FocusSettingsCommand,
-
-  // FocusEEPROMCommand adds a set of Focus commands, which are very helpful in
-  // both debugging, and in backing up one's EEPROM contents.
-  FocusEEPROMCommand,
 
   // The boot greeting effect pulses the LED button for 10 seconds after the
   // keyboard is first connected
@@ -504,10 +433,6 @@ KALEIDOSCOPE_INIT_PLUGINS(
   // and slowly moves the rainbow across your keyboard
   LEDRainbowWaveEffect,
 
-  // The chase effect follows the adventure of a blue pixel which chases a red pixel across
-  // your keyboard. Spoiler: the blue pixel never catches the red pixel
-  LEDChaseEffect,
-
   // These static effects turn your keyboard's LEDs a variety of colors
   solidRed,
   solidOrange,
@@ -520,23 +445,12 @@ KALEIDOSCOPE_INIT_PLUGINS(
   // The breathe effect slowly pulses all of the LEDs on your keyboard
   LEDBreatheEffect,
 
-  // The AlphaSquare effect prints each character you type, using your
-  // keyboard's LEDs as a display
-  AlphaSquareEffect,
-
-  // The stalker effect lights up the keys you've pressed recently
-  // StalkerEffect,
-
   // The LED Palette Theme plugin provides a shared palette for other plugins,
   // like Colormap below
   LEDPaletteTheme,
 
   // The Colormap effect makes it possible to set up per-layer colormaps
   ColormapEffect,
-
-  // The numpad plugin is responsible for lighting up the 'numpad' mode
-  // with a custom LED effect
-  // NumPad,
 
   // The macros plugin adds support for macros
   Macros,
@@ -567,39 +481,11 @@ KALEIDOSCOPE_INIT_PLUGINS(
   // performed when tapped, but the secondary action when held.
   Qukeys,
 
-  // Enables the "Sticky" behavior for modifiers, and the "Layer shift when
-  // held" functionality for layer keys.
-  OneShot,
-  OneShotConfig,
-  EscapeOneShot,
-  EscapeOneShotConfig,
-
   // Turns LEDs off after a configurable amount of idle time.
   IdleLEDs,
   PersistentIdleLEDs
 
-  // Enables dynamic, Chrysalis-editable macros.
-  // DynamicMacros,
-
-  // The FirmwareVersion plugin lets Chrysalis query the version of the firmware
-  // programmatically.
-  // FirmwareVersion,
-
-  // The LayerNames plugin allows Chrysalis to display - and edit - custom layer
-  // names, to be shown instead of the default indexes.
-  // LayerNames,
-
-  // Enables setting, saving (via Chrysalis), and restoring (on boot) the
-  // default LED mode.
-  // DefaultLEDModeConfig,
-
-  // Enables controlling (and saving) the brightness of the LEDs via Focus.
-  // LEDBrightnessConfig,
-
-  // Enables the GeminiPR Stenography protocol. Unused by default, but with the
-  // plugin enabled, it becomes configurable - and then usable - via Chrysalis.
-  // GeminiPR
-                          );
+);
 
 /** The 'setup' function is one of the two standard Arduino sketch functions.
  * It's called when your keyboard first powers up. This is where you set up
@@ -613,13 +499,6 @@ void setup() {
   // nice green color.
   BootGreetingEffect.hue = 85;
 
-  // While we hope to improve this in the future, the NumPad plugin
-  // needs to be explicitly told which keymap layer is your numpad layer
-  //  NumPad.numPadLayer = NUMPAD;
-
-  // We configure the AlphaSquare effect to use RED letters
-  AlphaSquare.color = CRGB(255, 0, 0);
-
   // Set the rainbow effects to be reasonably bright, but low enough
   // to mitigate audible noise in some environments.
   LEDRainbowEffect.brightness(100);
@@ -627,46 +506,6 @@ void setup() {
 
   // Set the action key the test mode should listen for to Left Fn
   HardwareTestMode.setActionKey(R3C6);
-
-  // The LED Stalker mode has a few effects. The one we like is called
-  // 'BlazingTrail'. For details on other options, see
-  // https://github.com/keyboardio/Kaleidoscope/blob/master/docs/plugins/LED-Stalker.md
-  // StalkerEffect.variant = STALKER(BlazingTrail);
-
-  // To make the keymap editable without flashing new firmware, we store
-  // additional layers in EEPROM. For now, we reserve space for eight layers. If
-  // one wants to use these layers, just set the default layer to one in EEPROM,
-  // by using the `settings.defaultLayer` Focus command, or by using the
-  // `keymap.onlyCustom` command to use EEPROM layers only.
-  // EEPROMKeymap.setup(8);
-
-  // We need to tell the Colormap plugin how many layers we want to have custom
-  // maps for. To make things simple, we set it to eight layers, which is how
-  // many editable layers we have (see above).
-  // ColormapEffect.max_layers(8);
-
-  // For Dynamic Macros, we need to reserve storage space for the editable
-  // macros. A kilobyte is a reasonable default.
-  DynamicMacros.reserve_storage(1024);
-
-  // If there's a default layer set in EEPROM, we should set that as the default
-  // here.
-  // Layer.move(EEPROMSettings.default_layer());
-
-  // To avoid any surprises, SpaceCadet is turned off by default. However, it
-  // can be permanently enabled via Chrysalis, so we should only disable it if
-  // no configuration exists.
-  //  SpaceCadetConfig.disableSpaceCadetIfUnconfigured();
-
-  // Editable layer names are stored in EEPROM too, and we reserve 16 bytes per
-  // layer for them. We need one extra byte per layer for bookkeeping, so we
-  // reserve 17 / layer in total.
-  LayerNames.reserve_storage(17 * 8);
-
-  // Unless configured otherwise with Chrysalis, we want to make sure that the
-  // firmware starts with LED effects off. This avoids over-taxing devices that
-  // don't have a lot of power to share with USB devices
-  //DefaultLEDModeConfig.activateLEDModeIfUnconfigured(&LEDOff);
 
   LEDOff.activate();
 
