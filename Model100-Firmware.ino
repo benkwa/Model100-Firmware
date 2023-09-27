@@ -78,11 +78,12 @@
   * a macro key is pressed.
   */
 
-enum { MACRO_VERSION_INFO,
-       MACRO_ARROW,
-       MACRO_MOUSE_SCREEN_L,
-       MACRO_MOUSE_SCREEN_R,
-     };
+enum {
+    MACRO_VERSION_INFO,
+    MACRO_ARROW,
+    MACRO_MOUSE_SCREEN_L,
+    MACRO_MOUSE_SCREEN_R,
+};
 
 
 /** The Model 100's key layouts are defined as 'keymaps'. By default, there are three
@@ -134,10 +135,10 @@ enum { MACRO_VERSION_INFO,
   */
 
 enum {
-  PRIMARY,
-  SYMBOL,
-  MOUSE,
-};  // layers
+    PRIMARY,
+    SYMBOL,
+    MOUSE,
+};
 
 // Aliases for readability
 #define Key_LeftCurly    Key_LeftCurlyBracket
@@ -256,10 +257,10 @@ KEYMAPS(
  */
 
 static void versionInfoMacro(uint8_t key_state) {
-  if (keyToggledOn(key_state)) {
-    Macros.type(PSTR("Keyboardio Model 100 - Firmware version "));
-    Macros.type(PSTR(XSTR(BUILD_INFORMATION)));
-  }
+    if (keyToggledOn(key_state)) {
+        Macros.type(PSTR("Keyboardio Model 100 - Firmware version "));
+        Macros.type(PSTR(XSTR(BUILD_INFORMATION)));
+    }
 }
 
 static void arrowOperatorMacro(uint8_t keyState) {
@@ -304,26 +305,26 @@ static void mouseScreenRight(uint8_t keyState) {
  */
 
 const macro_t *macroAction(uint8_t macro_id, KeyEvent &event) {
-  switch (macro_id) {
+    switch (macro_id) {
 
-  case MACRO_VERSION_INFO:
-    versionInfoMacro(event.state);
-    break;
+    case MACRO_VERSION_INFO:
+        versionInfoMacro(event.state);
+        break;
 
-  case MACRO_ARROW:
-      arrowOperatorMacro(event.state);
-      break;
+    case MACRO_ARROW:
+        arrowOperatorMacro(event.state);
+        break;
 
-  case MACRO_MOUSE_SCREEN_L:
-      mouseScreenLeft(event.state);
-      break;
+    case MACRO_MOUSE_SCREEN_L:
+        mouseScreenLeft(event.state);
+        break;
 
-  case MACRO_MOUSE_SCREEN_R:
-      mouseScreenRight(event.state);
-      break;
-  }
+    case MACRO_MOUSE_SCREEN_R:
+        mouseScreenRight(event.state);
+        break;
+    }
 
-  return MACRO_NONE;
+    return MACRO_NONE;
 }
 
 
@@ -344,15 +345,15 @@ static kaleidoscope::plugin::LEDSolidColor solidViolet(130, 0, 120);
  * and turns them back on when it wakes up.
  */
 void toggleLedsOnSuspendResume(kaleidoscope::plugin::HostPowerManagement::Event event) {
-  switch (event) {
-  case kaleidoscope::plugin::HostPowerManagement::Suspend:
-  case kaleidoscope::plugin::HostPowerManagement::Sleep:
-    LEDControl.disable();
-    break;
-  case kaleidoscope::plugin::HostPowerManagement::Resume:
-    LEDControl.enable();
-    break;
-  }
+    switch (event) {
+    case kaleidoscope::plugin::HostPowerManagement::Suspend:
+    case kaleidoscope::plugin::HostPowerManagement::Sleep:
+        LEDControl.disable();
+        break;
+    case kaleidoscope::plugin::HostPowerManagement::Resume:
+        LEDControl.enable();
+        break;
+    }
 }
 
 /** hostPowerManagementEventHandler dispatches power management events (suspend,
@@ -360,7 +361,7 @@ void toggleLedsOnSuspendResume(kaleidoscope::plugin::HostPowerManagement::Event 
  * events.
  */
 void hostPowerManagementEventHandler(kaleidoscope::plugin::HostPowerManagement::Event event) {
-  toggleLedsOnSuspendResume(event);
+    toggleLedsOnSuspendResume(event);
 }
 
 /** This 'enum' is a list of all the magic combos used by the Model 100's
@@ -371,11 +372,11 @@ void hostPowerManagementEventHandler(kaleidoscope::plugin::HostPowerManagement::
  * `USE_MAGIC_COMBOS` call below.
  */
 enum {
-  // Toggle between Boot (6-key rollover; for BIOSes and early boot) and NKRO
-  // mode.
-  COMBO_TOGGLE_NKRO_MODE,
-  // Enter test mode
-  COMBO_ENTER_TEST_MODE
+    // Toggle between Boot (6-key rollover; for BIOSes and early boot) and NKRO
+    // mode.
+    COMBO_TOGGLE_NKRO_MODE,
+    // Enter test mode
+    COMBO_ENTER_TEST_MODE
 };
 
 /** Wrappers, to be used by MagicCombo. **/
@@ -385,105 +386,109 @@ enum {
  * a function with an unused argument, to match what MagicCombo expects.
  */
 static void toggleKeyboardProtocol(uint8_t combo_index) {
-  USBQuirks.toggleKeyboardProtocol();
+    USBQuirks.toggleKeyboardProtocol();
 }
 
 /**
  *  This enters the hardware test mode
  */
 static void enterHardwareTestMode(uint8_t combo_index) {
-  HardwareTestMode.runTests();
+    HardwareTestMode.runTests();
 }
 
 
 /** Magic combo list, a list of key combo and action pairs the firmware should
  * recognise.
  */
-USE_MAGIC_COMBOS({.action = toggleKeyboardProtocol,
-                  // Left Fn + Esc + Shift
-                  .keys = {R3C6, R2C6, R3C7}},
-                 {.action = enterHardwareTestMode,
-                  // Left Fn + Prog + LED
-                  .keys = {R3C6, R0C0, R0C6}});
+USE_MAGIC_COMBOS(
+        {
+            .action = toggleKeyboardProtocol,
+            .keys = {R3C6, R2C6, R3C7}  // Left Fn + Esc + Shift
+        },
+        {
+            .action = enterHardwareTestMode,
+            .keys = {R3C6, R0C0, R0C6}  // Left Fn + Prog + LED
+        }
+);
 
 // First, tell Kaleidoscope which plugins you want to use.
 // The order can be important. For example, LED effects are
 // added in the order they're listed here.
 KALEIDOSCOPE_INIT_PLUGINS(
 
-  // The boot greeting effect pulses the LED button for 10 seconds after the
-  // keyboard is first connected
-  BootGreetingEffect,
+    // The boot greeting effect pulses the LED button for 10 seconds after the
+    // keyboard is first connected
+    BootGreetingEffect,
 
-  // The hardware test mode, which can be invoked by tapping Prog, LED and the
-  // left Fn button at the same time.
-  HardwareTestMode,
+    // The hardware test mode, which can be invoked by tapping Prog, LED and the
+    // left Fn button at the same time.
+    HardwareTestMode,
 
-  // LEDControl provides support for other LED modes
-  LEDControl,
+    // LEDControl provides support for other LED modes
+    LEDControl,
 
-  // We start with the LED effect that turns off all the LEDs.
-  LEDOff,
+    // We start with the LED effect that turns off all the LEDs.
+    LEDOff,
 
-  // The rainbow effect changes the color of all of the keyboard's keys at the same time
-  // running through all the colors of the rainbow.
-  LEDRainbowEffect,
+    // The rainbow effect changes the color of all of the keyboard's keys at the same time
+    // running through all the colors of the rainbow.
+    LEDRainbowEffect,
 
-  // The rainbow wave effect lights up your keyboard with all the colors of a rainbow
-  // and slowly moves the rainbow across your keyboard
-  LEDRainbowWaveEffect,
+    // The rainbow wave effect lights up your keyboard with all the colors of a rainbow
+    // and slowly moves the rainbow across your keyboard
+    LEDRainbowWaveEffect,
 
-  // These static effects turn your keyboard's LEDs a variety of colors
-  solidRed,
-  solidOrange,
-  solidYellow,
-  solidGreen,
-  solidBlue,
-  solidIndigo,
-  solidViolet,
+    // These static effects turn your keyboard's LEDs a variety of colors
+    solidRed,
+    solidOrange,
+    solidYellow,
+    solidGreen,
+    solidBlue,
+    solidIndigo,
+    solidViolet,
 
-  // The breathe effect slowly pulses all of the LEDs on your keyboard
-  LEDBreatheEffect,
+    // The breathe effect slowly pulses all of the LEDs on your keyboard
+    LEDBreatheEffect,
 
-  // The LED Palette Theme plugin provides a shared palette for other plugins,
-  // like Colormap below
-  LEDPaletteTheme,
+    // The LED Palette Theme plugin provides a shared palette for other plugins,
+    // like Colormap below
+    LEDPaletteTheme,
 
-  // The Colormap effect makes it possible to set up per-layer colormaps
-  ColormapEffect,
+    // The Colormap effect makes it possible to set up per-layer colormaps
+    ColormapEffect,
 
-  // The macros plugin adds support for macros
-  Macros,
+    // The macros plugin adds support for macros
+    Macros,
 
-  // The MouseKeys plugin lets you add keys to your keymap which move the mouse.
-  // The MouseKeysConfig plugin lets Chrysalis configure some aspects of the
-  // plugin.
-  MouseKeys,
-  // MouseKeysConfig,
+    // The MouseKeys plugin lets you add keys to your keymap which move the mouse.
+    // The MouseKeysConfig plugin lets Chrysalis configure some aspects of the
+    // plugin.
+    MouseKeys,
+    // MouseKeysConfig,
 
-  // The HostPowerManagement plugin allows us to turn LEDs off when then host
-  // goes to sleep, and resume them when it wakes up.
-  HostPowerManagement,
+    // The HostPowerManagement plugin allows us to turn LEDs off when then host
+    // goes to sleep, and resume them when it wakes up.
+    HostPowerManagement,
 
-  // The MagicCombo plugin lets you use key combinations to trigger custom
-  // actions - a bit like Macros, but triggered by pressing multiple keys at the
-  // same time.
-  MagicCombo,
+    // The MagicCombo plugin lets you use key combinations to trigger custom
+    // actions - a bit like Macros, but triggered by pressing multiple keys at the
+    // same time.
+    MagicCombo,
 
-  // The USBQuirks plugin lets you do some things with USB that we aren't
-  // comfortable - or able - to do automatically, but can be useful
-  // nevertheless. Such as toggling the key report protocol between Boot (used
-  // by BIOSes) and Report (NKRO).
-  USBQuirks,
+    // The USBQuirks plugin lets you do some things with USB that we aren't
+    // comfortable - or able - to do automatically, but can be useful
+    // nevertheless. Such as toggling the key report protocol between Boot (used
+    // by BIOSes) and Report (NKRO).
+    USBQuirks,
 
-  // The Qukeys plugin enables the "Secondary action" functionality in
-  // Chrysalis. Keys with secondary actions will have their primary action
-  // performed when tapped, but the secondary action when held.
-  Qukeys,
+    // The Qukeys plugin enables the "Secondary action" functionality in
+    // Chrysalis. Keys with secondary actions will have their primary action
+    // performed when tapped, but the secondary action when held.
+    Qukeys,
 
-  // Turns LEDs off after a configurable amount of idle time.
-  IdleLEDs,
-  PersistentIdleLEDs
+    // Turns LEDs off after a configurable amount of idle time.
+    IdleLEDs,
+    PersistentIdleLEDs
 
 );
 
@@ -492,24 +497,24 @@ KALEIDOSCOPE_INIT_PLUGINS(
  * Kaleidoscope and any plugins.
  */
 void setup() {
-  // First, call Kaleidoscope's internal setup function
-  Kaleidoscope.setup();
+    // First, call Kaleidoscope's internal setup function
+    Kaleidoscope.setup();
 
-  // Set the hue of the boot greeting effect to something that will result in a
-  // nice green color.
-  BootGreetingEffect.hue = 85;
+    // Set the hue of the boot greeting effect to something that will result in a
+    // nice green color.
+    BootGreetingEffect.hue = 85;
 
-  // Set the rainbow effects to be reasonably bright, but low enough
-  // to mitigate audible noise in some environments.
-  LEDRainbowEffect.brightness(100);
-  LEDRainbowWaveEffect.brightness(100);
+    // Set the rainbow effects to be reasonably bright, but low enough
+    // to mitigate audible noise in some environments.
+    LEDRainbowEffect.brightness(100);
+    LEDRainbowWaveEffect.brightness(100);
 
-  // Set the action key the test mode should listen for to Left Fn
-  HardwareTestMode.setActionKey(R3C6);
+    // Set the action key the test mode should listen for to Left Fn
+    HardwareTestMode.setActionKey(R3C6);
 
-  LEDOff.activate();
+    LEDOff.activate();
 
-  //  Qukeys.setOverlapThreshold(50);
+    //  Qukeys.setOverlapThreshold(50);
 }
 
 /** loop is the second of the standard Arduino sketch functions.
@@ -520,5 +525,5 @@ void setup() {
   */
 
 void loop() {
-  Kaleidoscope.loop();
+    Kaleidoscope.loop();
 }
