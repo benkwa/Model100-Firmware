@@ -81,8 +81,6 @@
 enum {
     MACRO_VERSION_INFO,
     MACRO_ARROW,
-    MACRO_MOUSE_SCREEN_L,
-    MACRO_MOUSE_SCREEN_R,
 };
 
 
@@ -143,8 +141,6 @@ enum {
 // Aliases for readability
 #define Key_LeftCurly    Key_LeftCurlyBracket
 #define Key_RightCurly   Key_RightCurlyBracket
-#define Mouse_ScrnL      M(MACRO_MOUSE_SCREEN_L)
-#define Mouse_ScrnR      M(MACRO_MOUSE_SCREEN_R)
 
 /**
   * To change your keyboard's layout from QWERTY to DVORAK or COLEMAK, comment out the line
@@ -214,7 +210,7 @@ KEYMAPS(
           ___, ___, ___, ___,
           ___,
 
-          ___, ___,              Mouse_ScrnL,     Mouse_ScrnR    , ___          , ___,           ___,
+          ___, ___,              ___,             ___,             ___,           ___,           ___,
           ___, Key_mouseWarpEnd, Key_mouseWarpNW, Key_mouseWarpNE, Key_mouseBtnL, Key_mouseBtnR, ___,
                ___,              Key_mouseWarpSW, Key_mouseWarpSE, ___,           ___,           ___,
           ___, ___,              ___,             ___,             ___,           ___,           ___,
@@ -269,29 +265,6 @@ static void arrowOperatorMacro(uint8_t keyState) {
     }
 }
 
-static void mouseScreenLeft(uint8_t keyState) {
-    if (keyToggledOn(keyState)) {
-        Kaleidoscope.hid().mouse().move(-4000, 0, 0, 0);
-        //        Kaleidoscope.hid().absoluteMouse().moveTo(16385,16385, 0);
-
-        // Kaleidoscope.hid().absoluteMouse().moveTo(0, MAX_WARP_HEIGHT/2, 0);
-        // Kaleidoscope.hid().mouse().move(-10, 0, 0, 0);
-        // Kaleidoscope.hid().absoluteMouse().moveTo(MAX_WARP_WIDTH/2, MAX_WARP_HEIGHT/2, 0);
-        // kaleidoscope::plugin::mousekeys::end_warping();
-    }
-}
-
-static void mouseScreenRight(uint8_t keyState) {
-    if (keyToggledOn(keyState)) {
-        Kaleidoscope.hid().mouse().move(3000, 0, 0, 0);
-        //        Kaleidoscope.hid().absoluteMouse().moveTo(16385,16385, 0);
-        // Kaleidoscope.hid().absoluteMouse().moveTo(MAX_WARP_WIDTH, MAX_WARP_HEIGHT/2, 0);
-        // Kaleidoscope.hid().mouse().move(10, 0, 0, 0);
-        // Kaleidoscope.hid().absoluteMouse().moveTo(MAX_WARP_WIDTH/2, MAX_WARP_HEIGHT/2, 0);
-        // kaleidoscope::plugin::mousekeys::end_warping();
-    }
-}
-
 /** macroAction dispatches keymap events that are tied to a macro
     to that macro. It takes two uint8_t parameters.
 
@@ -315,13 +288,6 @@ const macro_t *macroAction(uint8_t macro_id, KeyEvent &event) {
         arrowOperatorMacro(event.state);
         break;
 
-    case MACRO_MOUSE_SCREEN_L:
-        mouseScreenLeft(event.state);
-        break;
-
-    case MACRO_MOUSE_SCREEN_R:
-        mouseScreenRight(event.state);
-        break;
     }
 
     return MACRO_NONE;
