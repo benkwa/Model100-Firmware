@@ -14,7 +14,6 @@
 #include "Kaleidoscope-MagicCombo.h"
 #include "Kaleidoscope-MouseKeys.h"
 #include "Kaleidoscope-NumPad.h"
-#include "Kaleidoscope-OneShot.h"
 #include "Kaleidoscope-Qukeys.h"
 #include "Kaleidoscope-USB-Quirks.h"
 
@@ -53,7 +52,6 @@ enum {
 // Aliases for readability
 #define Key_LeftCurly    Key_LeftCurlyBracket
 #define Key_RightCurly   Key_RightCurlyBracket
-#define Key_ShiftLock    OSM(LeftShift)
 
 
 KEYMAPS(
@@ -61,9 +59,9 @@ KEYMAPS(
   [PRIMARY] = KEYMAP_STACKED(
           // Left Hand
           Key_Equals,    Key_1, Key_2, Key_3, Key_4, Key_5, Key_Escape,
-          ___,           Key_Q, Key_W, Key_E, Key_R, Key_T, ___,
+          Key_CapsLock,  Key_Q, Key_W, Key_E, Key_R, Key_T, ___,
           Key_Tab,       Key_A, Key_S, Key_D, Key_F, Key_G,
-          Key_ShiftLock, Key_Z, Key_X, Key_C, Key_V, Key_B, Key_Meh,
+          Key_LeftShift, Key_Z, Key_X, Key_C, Key_V, Key_B, Key_Meh,
 
           CTL_T(Backspace), ALT_T(Delete), GUI_T(Home), Key_End,
           ShiftToLayer(SYMBOL),
@@ -73,7 +71,7 @@ KEYMAPS(
           ___,                 Key_6, Key_7, Key_8,     Key_9,         Key_0,         Key_Minus,
           ___,                 Key_Y, Key_U, Key_I,     Key_O,         Key_P,         Key_Backslash,
                                Key_H, Key_J, Key_K,     Key_L,         Key_Semicolon, Key_Quote,
-          ShiftToLayer(MOUSE), Key_N, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_ShiftLock,
+          ShiftToLayer(MOUSE), Key_N, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_RightShift,
 
           Key_PageDown, GUI_T(PageUp), ALT_T(Enter), CTL_T(Spacebar),
           ShiftToLayer(SYMBOL)
@@ -248,9 +246,6 @@ KALEIDOSCOPE_INIT_PLUGINS(
         // See USE_MAGIC_COMBOS
         // https://kaleidoscope.readthedocs.io/en/latest/plugins/Kaleidoscope-MagicCombo.html
         MagicCombo,
-
-        // https://kaleidoscope.readthedocs.io/en/latest/plugins/Kaleidoscope-OneShot.html
-        OneShot,
 
         // Low-level workarounds for USB stuff.
         // https://kaleidoscope.readthedocs.io/en/latest/plugins/Kaleidoscope-USB-Quirks.html
